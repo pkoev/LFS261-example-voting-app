@@ -10,7 +10,7 @@ Download [Docker](https://www.docker.com/products/overview). If you are on Mac o
 
 ## GIGA TUSK
 
-# THE OMEGA TUSK
+## THE OMEGA TUSK
 Run in this directory:
 ```
 docker-compose up
