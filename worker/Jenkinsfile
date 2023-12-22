@@ -1,12 +1,18 @@
 pipeline {
-  agent {
-    docker {
-      image 'maven:3-jdk-8-slim'
-      args '-v $HOME/.m2:/root/.m2'
-    }
+  agent none
   }
   stages {
     stage('Build') {
+      when{
+        changeset "**/worker/**"
+      }
+      agent {
+        docker {
+          image 'maven:3-jdk-8-slim'
+          args '-v $HOME/.m2:/root/.m2'
+        }
+      }
+
       steps {
         echo "Building the app"
         dir('worker') {
@@ -15,6 +21,15 @@ pipeline {
       }
     }
     stage('Test') {
+      when{
+        changeset "**/worker/**"
+      }
+      agent {
+        docker {
+          image 'maven:3-jdk-8-slim'
+          args '-v $HOME/.m2:/root/.m2'
+        }
+      }
       steps {
         echo "Testing the app"
         dir('worker') {
@@ -23,6 +38,17 @@ pipeline {
       }
     }
     stage('Package') {
+      when{
+        branch 'master'
+        changeset "**/worker/**"
+      }
+      agent {
+        docker {
+          image 'maven:3-jdk-8-slim'
+          args '-v $HOME/.m2:/root/.m2'
+        }
+      }
+            
       steps {
         echo "Packaging the app"
         dir('worker') {
@@ -32,6 +58,11 @@ pipeline {
       }
     }
     stage('docker-package') {
+      agent any
+      when{
+        branch 'master'
+        changeset "**/worker/**"
+      }
       steps {
         echo "Building docker image"
         script{
