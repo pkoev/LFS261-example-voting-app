@@ -9,22 +9,25 @@ pipeline {
     stage('Build') {
       steps {
         echo "Building the app"
-        dir('worker')
-        sh 'mvn compile'
+        dir('worker') {
+          sh 'mvn compile'
+        }
       }
     }
     stage('Test') {
       steps {
         echo "Testing the app"
-        dir('worker')
-        sh 'mvn clean test'
+        dir('worker') {
+          sh 'mvn clean test'
+        }
       }
     }
     stage('Package') {
       steps {
         echo "Packaging the app"
-        dir('worker')
-        sh 'mvn package -DskipTests'
+        dir('worker') {
+          sh 'mvn package -DskipTests'
+        }
         archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
       }
     }
