@@ -1,0 +1,50 @@
+pipeline {
+  agent {
+    docker {
+      image 'maven:3-jdk-8-slim'
+      args '-v $HOME/.m2:/root/.m2'
+    }
+  }
+  stages {
+    stage('Build') {
+      steps {
+        echo "Building the app"
+        dir('worker')
+        sh 'mvn compile'
+      }
+    }
+    stage('Test') {
+      steps {
+        echo "Testing the app"
+        dir('worker')
+        sh 'mvn clean test'
+      }
+    }
+    stage('Package') {
+      steps {
+        echo "Packaging the app"
+        dir('worker')
+        sh 'mvn package -DskipTests'
+        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+      }
+    }
+    post {
+      always {
+        echo "Boo ya!"
+      }
+      success {
+        echo "Dis one flew by"
+      }
+      failure {
+        echo "Dis one din fly"
+      }
+      unstable {
+        echo "Dis one flew by the cookoo's nest"
+      }
+      changed {
+        echo "This will run only if the state of the Pipeline has changed"
+        echo "For example, if the Pipeline was previously failing but is now successful"
+      }
+    }
+  }
+}
